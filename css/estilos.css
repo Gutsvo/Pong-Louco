@@ -1,0 +1,15 @@
+body{
+    margin: 0; /* zerando todas as margins do documento */
+    padding: 0; /* zerando todas os espaçamentos do documento */
+    background-color: #3b3b3b;
+}
+
+canvas{
+    position: absolute; /* deixa a posição do canva fixa */
+    background-color: #819eff;
+    margin: auto; /* propriedade para alinhamento centralizado */
+    top: 0; /* propriedade para alinhamento centralizado */
+    bottom: 0; /* propriedade para alinhamento centralizado */
+    left: 0; /* propriedade para alinhamento centralizado */
+    right: 0; /* propriedade para alinhamento centralizado */
+}
