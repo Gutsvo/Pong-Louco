@@ -1,5 +1,6 @@
 let canvasPong = document.getElementById('canvas') /* variável para manipular o elemento html canvas*/
 let quadro = canvasPong.getContext('2d')
+const audio = new Audio('js/rolha.mp3')
 let letras = canvasPong.getContext('2d')
 quadro.fillStyle = '#f520af'
  
@@ -30,6 +31,7 @@ let bolinha = {
     tx:30,
     ty:30,
     dir:5,
+    dirY:2,
 }
 
 quadro.font = '25px arial'
@@ -38,16 +40,53 @@ letras.fillStyle = '#f14aac'
 let pts1 = 0
 let pts2 = 0
 
+let jogar = true
+
 let score1 = letras.fillText('Pontos 1: ' + pts1, 70, 50)
 let score2 = letras.fillText(`Pontos 2: ${pts2}`, 1300, 50)
 
 function moverBolinha(){ 
     bolinha.px += bolinha.dir
-    if(bolinha.px > 1360){
-        bolinha.dir *= -1.1
+    bolinha.py += bolinha.dirY
+
+    if(bolinha.py < 0){
+        bolinha.dirY *= -1.005
     }
-    else if(bolinha.px < 95){
-        bolinha.dir *= -1.1
+    if(bolinha.py > 720){
+        bolinha.dirY *= -1.005
+    }
+}
+
+function fimJogo(){
+    if (pts1 > 4 || pts2 > 4){
+        jogar = false
+    }
+}
+
+function colisaoBolinha(){
+    if(bolinha.py + bolinha.ty >= player2.py && bolinha.py <= player2.py + player2.ty && bolinha.px >= player2.px - player2.tx && bolinha.px <= player2.px + player2.tx && bolinha.px >= player2.px - player2.tx){
+        bolinha.dir *= -1.005
+        audio.play()
+    }
+    else if(bolinha.py + bolinha.ty >= player1.py && bolinha.py <= player1.py + player1.ty && bolinha.px <= player1.px + player1.tx && bolinha.px >= player1.px - player1.tx && bolinha.px <= player1.px + player1.tx && bolinha.px >= player1.px - player1.tx){
+        bolinha.dir *= -1.005
+        audio.play()
+    }
+}
+
+function pontos(){
+    if(bolinha.px < -115){
+        bolinha.px = 718
+        bolinha.py = 340
+        bolinha.dir *= -1
+        pts2 = pts2+1
+    }
+
+    else if(bolinha.px > 1525) {
+        bolinha.px = 718
+        bolinha.py = 340
+        bolinha.dir *= -1
+        pts1 = pts1+1
     }
 }
 
@@ -57,6 +96,13 @@ function draw(){
     quadro.fillRect(bolinha.px, bolinha.py, bolinha.tx, bolinha.ty)
     quadro.fillText(`Pontos 2: ${pts2}`, 1250, 50)
     quadro.fillText(`Pontos 1: ` + pts1, 130, 50)
+}
+
+function telaVencendor(){
+    quadro.clearRect(0, 0, 1500, 750)
+    quadro.font = '60px arial'
+    quadro.fillText(`Pontuação 1: ${pts1}`, 250, 345)
+    quadro.fillText(`Pontuação 2: ${pts2}`, 900, 345)
 }
 
 function moverJogador(){
@@ -122,11 +168,19 @@ function moverJogador2(){
 
 
 function main(){
+    if(jogar){
     quadro.clearRect(0,0,1500,780)
     draw()
     moverBolinha()
     moverJogador1()
     moverJogador2()
+    colisaoBolinha()
+    pontos()
+    fimJogo()
+    }
+    else{
+        telaVencendor()
+    }
 }
 
 setInterval(main, 10)
